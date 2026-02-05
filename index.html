@@ -1,22 +1,311 @@
 <!DOCTYPE html>
-<html>
+<html lang="mn">
 <head>
-  <meta charset="utf-8">
-  <title>AI Chatbot Service</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Chatbot үйлчилгээ | Portfolio</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#101a33;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#22c55e;
+      --accent2:#60a5fa;
+      --line:rgba(148,163,184,.18);
+      --shadow: 0 18px 45px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(96,165,250,.22), transparent 55%),
+                  radial-gradient(900px 500px at 80% 20%, rgba(34,197,94,.18), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1050px; margin:0 auto; padding:24px}
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; padding:14px 16px; border:1px solid var(--line);
+      background: rgba(16,26,51,.65); backdrop-filter: blur(8px);
+      border-radius: 999px;
+      position: sticky; top:12px; z-index: 10;
+    }
+    .brand{display:flex; align-items:center; gap:10px; font-weight:700}
+    .dot{width:10px; height:10px; border-radius:999px; background: linear-gradient(45deg,var(--accent2),var(--accent))}
+    .navlinks{display:flex; gap:14px; color:var(--muted); font-size:14px}
+    .navlinks a:hover{color:var(--text)}
+    .hero{
+      margin-top:22px;
+      display:grid; grid-template-columns: 1.2fr .8fr; gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 900px){ .hero{grid-template-columns:1fr} .nav{position:static} }
+    .card{
+      border:1px solid var(--line);
+      background: rgba(16,26,51,.70);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:22px;
+    }
+    .kicker{
+      display:inline-flex; gap:8px; align-items:center;
+      color: var(--muted); font-size:14px;
+      border:1px solid var(--line);
+      padding:8px 12px; border-radius:999px;
+      background: rgba(255,255,255,.03);
+    }
+    h1{margin:14px 0 10px; font-size:40px; line-height:1.12}
+    @media (max-width: 520px){ h1{font-size:32px} }
+    .sub{color:var(--muted); font-size:16px; margin:0 0 18px}
+    .ctaRow{display:flex; gap:12px; flex-wrap:wrap; margin-top:16px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:12px 14px; border-radius: 12px; font-weight:700;
+      border:1px solid var(--line); background: rgba(255,255,255,.04);
+    }
+    .btnPrimary{
+      border:none;
+      background: linear-gradient(45deg, var(--accent2), var(--accent));
+      color:#061018;
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .grid3{
+      margin-top:18px;
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+    }
+    @media (max-width: 900px){ .grid3{grid-template-columns:1fr} }
+    .mini{
+      padding:16px; border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+    .mini h3{margin:0 0 6px; font-size:16px}
+    .mini p{margin:0; color:var(--muted); font-size:14px}
+
+    .sectionTitle{margin:28px 0 10px; font-size:22px}
+    .muted{color:var(--muted)}
+    .twoCol{display:grid; grid-template-columns: 1fr 1fr; gap:14px}
+    @media (max-width: 900px){ .twoCol{grid-template-columns:1fr} }
+
+    /* Chat demo */
+    .chatBox{display:flex; flex-direction:column; gap:12px}
+    .chatHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      padding-bottom:10px; border-bottom:1px solid var(--line);
+    }
+    .badge{font-size:12px; color:#061018; padding:6px 10px; border-radius:999px;
+      background: linear-gradient(45deg, var(--accent2), var(--accent)); font-weight:800}
+    .chatArea{
+      height:320px; overflow:auto; padding:12px;
+      border:1px solid var(--line); border-radius: 16px;
+      background: rgba(0,0,0,.20);
+    }
+    .bubble{
+      max-width: 85%;
+      padding:10px 12px; border-radius:14px;
+      margin:8px 0; border:1px solid var(--line);
+      font-size:14px;
+    }
+    .me{margin-left:auto; background: rgba(96,165,250,.12)}
+    .bot{margin-right:auto; background: rgba(34,197,94,.10)}
+    .chatControls{display:flex; gap:10px; flex-wrap:wrap}
+    select, input{
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:10px 12px; border-radius: 12px;
+      outline:none;
+      flex:1;
+      min-width: 220px;
+    }
+    .small{font-size:13px; color:var(--muted)}
+    .footer{
+      margin:28px 0 6px; text-align:center; color:var(--muted); font-size:13px
+    }
+  </style>
 </head>
 <body>
-  <h1>AI Chatbot үйлчилгээ</h1>
-  <p>Би жижиг бизнесүүдэд зориулсан
-  автомат inbox хариулагч AI хийж өгдөг.</p>
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand"><span class="dot"></span> buynaa • AI</div>
+      <div class="navlinks">
+        <a href="#services">Үйлчилгээ</a>
+        <a href="#demo">Chatbot demo</a>
+        <a href="#contact">Холбоо барих</a>
+      </div>
+    </div>
 
-  <h2>Юу хийж өгдөг вэ?</h2>
-  <ul>
-    <li>Facebook inbox auto reply</li>
-    <li>Захиалга автоматаар авах</li>
-    <li>Клиент алдахгүй болгох</li>
-  </ul>
+    <div class="hero">
+      <div class="card">
+        <div class="kicker">🤖 AI Chatbot • 💬 Inbox auto-reply • ⚡ Automation</div>
+        <h1>Жижиг бизнесийн inbox-ийг автомат болгоно.</h1>
+        <p class="sub">
+          Би ресторан, онлайн шоп, үйлчилгээний бизнесүүдэд зориулж
+          <b>FAQ chatbot</b>, <b>захиалга авах</b>, <b>клиент алдахгүй</b> систем хийж өгдөг.
+        </p>
+        <div class="ctaRow">
+          <a class="btn btnPrimary" href="#demo">Demo үзэх</a>
+          <a class="btn" href="#contact">Үнэгүй demo хүсэх</a>
+        </div>
 
-  <h2>Холбоо барих</h2>
-  <p>Inbox эсвэл Google Form</p>
+        <div class="grid3" id="services">
+          <div class="mini">
+            <h3>1) Inbox auto reply</h3>
+            <p>Ажиллах цаг, байршил, үнэ, үйлчилгээний асуултад автоматаар хариулна.</p>
+          </div>
+          <div class="mini">
+            <h3>2) Захиалга авах</h3>
+            <p>Захиалга/өргөдөл/хүсэлтийг нэг хэлбэрт оруулж бүртгэдэг болгоно.</p>
+          </div>
+          <div class="mini">
+            <h3>3) Automation</h3>
+            <p>Мессеж → Google Sheet / Email / Notification зэрэг урсгал үүсгэнэ.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="sectionTitle" style="margin-top:0">Богино танилцуулга</h2>
+        <p class="muted" style="margin-top:6px">
+          Би AI ашиглан бизнесийн давтагддаг ажлыг хөнгөвчилж, хурдан хариулт өгөх систем хийдэг.
+          Туршилтын <b>үнэгүй demo</b> хийж өгч болно.
+        </p>
+
+        <div class="twoCol" style="margin-top:14px">
+          <div class="mini">
+            <h3>Хийж чадна</h3>
+            <p class="small">• Монгол хэл дээрх FAQ bot<br/>• Contact form → auto reply<br/>• Захиалга бүртгэл</p>
+          </div>
+          <div class="mini">
+            <h3>Зорилго</h3>
+            <p class="small">Клиент асуултанд хурдан хариулж, борлуулалтын алдагдлыг бууруулах.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="demo" style="margin-top:18px">
+      <div class="chatBox">
+        <div class="chatHeader">
+          <div>
+            <div class="sectionTitle" style="margin:0">💬 Chatbot demo</div>
+            <div class="small">Доорх асуултыг сонгоод “Илгээх” дар — bot хэрхэн хариулахыг харна.</div>
+          </div>
+          <div class="badge">DEMO</div>
+        </div>
+
+        <div class="chatArea" id="chatArea"></div>
+
+        <div class="chatControls">
+          <select id="qSelect">
+            <option value="hours">⏰ Ажиллах цаг хэд вэ?</option>
+            <option value="location">📍 Байршил хаана вэ?</option>
+            <option value="price">💰 Үнэ/үйлчилгээний мэдээлэл?</option>
+            <option value="order">🛒 Захиалга яаж өгөх вэ?</option>
+            <option value="contact">📞 Холбогдох дугаар?</option>
+            <option value="custom">✍️ Өөр асуулт бичих</option>
+          </select>
+          <input id="customInput" placeholder="Өөр асуултаа энд бич…" style="display:none"/>
+          <button class="btn btnPrimary" id="sendBtn" type="button">Илгээх</button>
+          <button class="btn" id="resetBtn" type="button">Цэвэрлэх</button>
+        </div>
+
+        <div class="small">
+          ✅ Энэ demo нь “canned response” загвар. Жинхэнэ хувилбарт: таны бизнесийн мэдээлэл + меню/үйлчилгээ + автомат бүртгэл нэмэгдэнэ.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="contact" style="margin-top:18px">
+      <h2 class="sectionTitle" style="margin-top:0">📩 Холбоо барих</h2>
+      <p class="muted" style="margin-top:6px">
+        Үнэгүй demo хийлгэхээр бол: Facebook inbox эсвэл доорх маягтаар (Google Form) холбоо барина.
+      </p>
+
+      <!-- Сонголт 1: Google Form линк -->
+      <div class="mini">
+        <h3>Google Form (линк тавина)</h3>
+        <p class="small">
+          Энд өөрийн Google Form-ын линкийг тавьж болно.<br/>
+          Жишээ: “Хүсэлт илгээх” товч дээр дарж маягтаа бөглүүлнэ.
+        </p>
+        <a class="btn btnPrimary" href="#" onclick="alert('Энд Google Form линкээ тавиарай!'); return false;">Хүсэлт илгээх</a>
+      </div>
+
+      <p class="small" style="margin-top:14px">
+        * Хэрвээ хүсвэл энэ хуудсыг ресторан/шопын нэр, меню, үнэ, зурагтай болгож илүү “жинхэнэ бизнес сайт” болгоно.
+      </p>
+    </div>
+
+    <div class="footer">© <span id="year"></span> buynaa-cpu • AI Chatbot Portfolio</div>
+  </div>
+
+  <script>
+    const chatArea = document.getElementById("chatArea");
+    const qSelect = document.getElementById("qSelect");
+    const customInput = document.getElementById("customInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const answers = {
+      hours: "Манайх өдөр бүр 10:00–22:00 хүртэл ажиллаж байна. Та өнөөдөр хэдэн цагт ирэх вэ?",
+      location: "Байршил: (Энд өөрийн хаягаа бичнэ). Хэрвээ хүсвэл Google Maps линк явуулж өгч болно.",
+      price: "Үйлчилгээ/үнэ: (Энд гол 3 үйлчилгээгээ + үнэ оруулна). Та яг аль үйлчилгээ сонирхож байна вэ?",
+      order: "Захиалга өгөхдөө: 1) Нэр 2) Утас 3) Хүргэлт/очиж авах 4) Захиалга гэж бичээд явуулаарай.",
+      contact: "Холбогдох: 9xxxxxxx (Энд дугаараа). Мөн энэ inbox-оор шууд бичиж болно."
+    };
+
+    function addBubble(text, who="bot"){
+      const div = document.createElement("div");
+      div.className = "bubble " + (who === "me" ? "me" : "bot");
+      div.textContent = text;
+      chatArea.appendChild(div);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function boot(){
+      chatArea.innerHTML = "";
+      addBubble("Сайн байна уу! Та юу асуух вэ? Доорх сонголтоос сонгоод илгээгээрэй 😊", "bot");
+    }
+
+    qSelect.addEventListener("change", () => {
+      if(qSelect.value === "custom"){
+        customInput.style.display = "block";
+        customInput.focus();
+      } else {
+        customInput.style.display = "none";
+        customInput.value = "";
+      }
+    });
+
+    sendBtn.addEventListener("click", () => {
+      let qKey = qSelect.value;
+      let userText = "";
+
+      if(qKey === "custom"){
+        userText = (customInput.value || "").trim();
+        if(!userText){
+          alert("Асуултаа бичээрэй.");
+          return;
+        }
+        addBubble(userText, "me");
+        addBubble("Баярлалаа! Энэ асуултад хариулахын тулд жаахан тодруулга хэрэгтэй байна. Та яг ямар мэдээлэл сонирхож байна вэ?", "bot");
+        return;
+      }
+
+      const label = qSelect.options[qSelect.selectedIndex].text;
+      addBubble(label, "me");
+      addBubble(answers[qKey], "bot");
+    });
+
+    resetBtn.addEventListener("click", boot);
+    document.getElementById("year").textContent = new Date().getFullYear();
+    boot();
+  </script>
 </body>
 </html>
